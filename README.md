@@ -24,7 +24,6 @@ Very simple application that allows the user to hook up multiple email accounts.
 - Showcase my current fullstack abilities
 
 ## Gallery
-![Inbox](https://user-images.githubusercontent.com/38735401/159113999-7ed384c5-22ed-4751-a9e6-03071a8fc1ac.png)
-
+![inbox](https://user-images.githubusercontent.com/38735401/159114034-e18a8e23-46da-4205-9464-22c717f3f218.png)
 # Disclaimer
 Application was created only for fun and for local use. I don't recommend hosting it anywhere as an actual mail client.
