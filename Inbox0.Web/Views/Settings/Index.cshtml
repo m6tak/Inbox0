@@ -1,0 +1,119 @@
+﻿@model Inbox0.Web.Models.ViewModels.SettingsViewModel
+
+@using Inbox0.Web.Models.Forms
+@{
+    ViewData["title"] = "Ustawienia";
+}
+
+<style>
+    h4 {
+        text-align: center;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        margin: 5px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #0d6efd;
+      border-radius: 10px;
+    }
+
+    hr {
+      border: 0;
+      clear:both;
+      display:block;
+      width: 96%;               
+      background-color:#666;
+      height: 1px;
+    }
+</style>
+
+<div class="modal fade" id="mail-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configure account</h3>
+            </div>
+            <div class="modal-body" id="mail-modal-body">
+                @await Html.PartialAsync("_EmailForm", new EmailForm())
+            </div>
+            <div class="modal-footer">
+                <div role="button" class="btn btn-danger" data-dismiss="modal">Close</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="inbox-container">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 100%; height: 100vh; margin: 0;">
+        <div class="nav-header">
+            <a class="navlink" href="#">Back</a>
+            <h4>Mail Accounts</h4>
+        </div>
+        <section id="mail-accounts" style="max-height: 400px; overflow-y:scroll;">
+            
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th>Email address</th>
+                        <th>Incoming protocole</th>
+                        <th>Incoming port</th>
+                        <th>Outgoing protocole</th>
+                        <th>Outgoing port</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var account in Model.User.MailAccounts)
+                    {
+                        <tr>
+                            <td>@account.EmailAddress</td>
+                            <td>@account.IncomingProtocol</td>
+                            <td>@account.IncomingPort</td>
+                            <td>@account.OutgoingProtocol</td>
+                            <td>@account.OutgoingPort</td>
+                            <td><button id="delete-email" name='@account.Id' class="btn btn-outline-danger">Delete</button></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><button id="add-email" class="btn btn-primary">Add account</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <hr />
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $('#add-email').click(() => {
+                $blModal = $('#mail-modal');
+                $blModal.appendTo('body');
+                $blModal.modal("show");
+            });
+
+            $('#delete-email').click(() => {
+                let id = $('#delete-email').attr('name');
+                $.ajax(`/Settings/DeleteMailAccount/${id}`, {method: 'DELETE'}).done(() => {
+                    location.reload();
+                });
+            });
+        });
+    </script>
+}
+

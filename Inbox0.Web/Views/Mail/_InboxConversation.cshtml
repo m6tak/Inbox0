@@ -1,0 +1,54 @@
+﻿@using System.Web
+@model Inbox0.Web.Models.ViewModels.InboxConversationViewModel
+
+<style>
+    hr {
+      border: 0;
+      clear:both;
+      display:block;
+      width: 96%;               
+      background-color:#666;
+      height: 1px;
+    }
+
+    #message-container {
+        color:black;
+        overflow-y: scroll;
+        overflow-x: scroll;
+    }
+
+    #title-container {
+        color: white;
+        text-align: center;
+    }
+
+    #conversation-container {
+        color: white;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+</style>
+
+
+<div id="conversation-container">
+    <div id="title-container">
+        <h5>@Model.Subject</h5>
+        <small>@Model.From</small>
+        <hr />
+    </div>
+    <div id="message-container">
+        @foreach(var message in Model.Messages)
+        {
+            <div class="card bg-dark">
+                <div class="card-header">
+                    <p><b>@message.Subject</b></p>
+                    <small>@message.From</small>
+                </div>
+                <div class="card-content bg-white">
+                    @Html.Raw(message.Content)
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

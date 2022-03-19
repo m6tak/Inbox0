@@ -1,0 +1,56 @@
+﻿@model Inbox0.Web.Models.Forms.EmailForm;
+
+@using (Html.BeginForm("AddMailAccount", "Settings", FormMethod.Post, new {@id="bl-form"}))
+{
+    <div class="form-group">
+        <label for="account-name">Name</label>
+        <input value="@Model?.Name" type="text" id="account-name" name="Name" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="mail-address">Email</label>
+        <input value="@Model?.EmailAddress" type="text" id="mail-address" name="EmailAddress" class="form-control"/>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="incoming-server">Incoming server</label>
+                <input value="@Model?.IncomingServer" type="text" id="incoming-server" name="IncomingServer" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="incoming-port">Incoming port</label>
+                <input value="@Model?.IncomingPort" type="number" id="incoming-port" name="IncomingPort" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="incoming-password">Incoming password</label>
+                <input value="@Model?.IncomingPassword" type="password" id="incoming-password" name="IncomingPassword" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <select name="IncomingProtocol" class="form-control">
+                    <option disabled>Incoming protocol</option>
+                    <option>IMAP</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="outgoing-server">Outgoing server</label>
+                <input value="@Model?.OutgoingServer" type="text" id="outgoing-server" name="OutgoingServer" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="outgoing-port">Outgoing port</label>
+                <input value="@Model?.OutgoingPort" type="number" id="outgoing-port" name="OutgoingPort" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="outgoing-password">Outgoing password</label>
+                <input value="@Model?.OutgoingPassword" type="password" id="outgoing-password" name="OutgoingPassword" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <select name="OutgoingProtocol" class="form-control">
+                    <option disabled>Outgoing protocol</option>
+                    <option>SMTP</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success form-control">Save</button>
+}

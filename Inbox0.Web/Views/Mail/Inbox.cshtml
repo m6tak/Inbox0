@@ -1,0 +1,179 @@
+﻿@model Inbox0.Web.Models.ViewModels.InboxViewModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .inbox-container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .inbox-item {
+        background: #3c434a;
+        color: white;
+        cursor: pointer;
+        transition: .175s;
+    }
+
+    .inbox-item:hover {
+        color: #0d6efd;
+    }
+
+    #inbox-search-controller {
+        background: #2b3036;
+        color: white;
+    }
+
+    .search-form {
+        display: flex;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .inbox-items-list {
+        overflow-y: scroll;
+        max-height: 94vh;
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+
+    #inbox-content-container {
+        -moz-box-shadow:    inset 0 0 10px #16191b;
+        -webkit-box-shadow: inset 0 0 10px #16191b;
+        box-shadow:         inset 0 0 10px #16191b;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        margin: 5px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #0d6efd;
+      border-radius: 10px;
+    }
+
+    hr {
+      border: 0;
+      clear:both;
+      display:block;
+      width: 96%;               
+      background-color:#666;
+      height: 1px;
+    }
+
+    .inbox-control {
+       background-color: #1b56b3;
+       outline: 1px solid #0d6efd;
+       border: none;
+       margin: 2px;
+       color: white;
+       font-weight: bold;
+       font-size: 17px;
+    }
+
+</style>
+
+<div class="inbox-container">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100%; margin: 0;">
+        <small>@DateTime.Now.ToString("yyyy-MM-dd") @DateTime.Now.DayOfWeek.ToString()</small> <br>
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <h3>Inbox0</h3>
+        </a>
+        <hr />
+        <a asp-action="Index" asp-controller="Settings" class="nav-link" aria-current="page">
+            Settings
+        </a>
+        <hr />
+        @if(!Model.NoMailAccount)
+        {
+            @foreach(var account in Model.User.MailAccounts)
+            {
+                <a class="nav-link" data-toggle="collapse" href="#account-@account.Id-section" role="button" aria-expanded="false" aria-controls="account-@account.Id-section">
+                    @account.EmailAddress
+                </a>
+                <ul id="account-@account.Id-section" class="collapse">
+                    @foreach(var inbox in account.Inboxes)
+                    {
+                        <li>
+                            <a href="#" onclick="loadInbox('@Model.SelectedMailAccountId', '@inbox.Id');" class="nav-link active inbox-selector" aria-current="page">
+                              @inbox.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        }
+    </div>
+    <div id="inbox-content-container" d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 100%; height: 100%; margin: 0; background-color: #3c434a">
+        <nav class="navbar navbar-dark bg-dark justify-content-center">
+            <input id="inbox-search-controller" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="width: 60%;">
+        </nav>
+        @if(Model.NoMailAccount)
+        {
+            <p style="text-align: center;">Configure mail account in <a asp-action="Index" asp-controller="Settings">Settings</a> tab</p>
+        }
+        else
+        {
+            <div id="inbox-table-container" class="inbox-items-list">
+                @await Html.PartialAsync("_InboxConversationTable", Model)
+            </div>
+        }
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        const inboxItems = document.getElementsByClassName('inbox-item');
+        var allChecked = false;
+
+
+        function loadInbox(mailId, inboxId) {
+            let body = {
+                mailId: mailId,
+                inboxId: inboxId
+            };
+            console.log(body);
+            $.ajax(`/Mail/Inbox`, {
+                method: 'POST',
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done((res) => {
+                $('#inbox-table-container').html(res);
+            })
+        }
+
+        $(document).ready(() => {
+            $('#inbox-search-controller').keyup(() => {
+                let val = $('#inbox-search-controller').val();
+                if(val.length == 0) {
+                    for(let i = 0; i < inboxItems.length; i++) {
+                        inboxItems[i].classList.remove('hidden');
+                    }
+                }
+                else {
+                    for(let i = 0; i < inboxItems.length; i++) {
+                        if(inboxItems[i].textContent.includes(val)) {
+                            inboxItems[i].classList.remove('hidden');
+                            continue;
+                        }
+
+                        inboxItems[i].classList.add('hidden');
+                    }
+                }
+            })
+        });
+    </script>
+}
